@@ -13,7 +13,7 @@ const preguntas = [
             },
             {
                 value: '2',
-                name: `${ '1'.green }. Listar Tareas`
+                name: `${ '2'.green }. Listar Tareas`
             },
             {
                 value: '3',
@@ -83,10 +83,76 @@ const leerInput = async( message ) => {
     return desc;
 }
 
+const listadoTareasBorrar = async(tareas = [] ) => {
+    // returna un nuevo arreglo trasnformandolo como nostros queramos
+    const choices = tareas.map( ( tarea, i ) => {
+        const idx = `${i + 1}.`.green;
+        return {
+            value: tarea.id,
+            name: `${ idx } ${ tarea.desc }`
+        }
+    });
+    // unshift agrega una item al incio del arreglo
+    choices.unshift({ 
+        value: '0',
+        name: '0.'.green + ' Cancelar'
+    });
 
+    const preguntas = [
+        {
+            type: 'list',
+            name: 'id',
+            message: 'Borrar',
+            choices
+        }
+    ]
+    const { id } = await inquirer.prompt(preguntas);
+
+    return id;
+}
+
+const confirmar = async( mensaje ) => {
+    const pregunta = [
+        {
+            type: 'confirm',
+            name: 'ok',
+            message: mensaje
+        }
+    ];
+
+    const { ok } = await inquirer.prompt(pregunta);
+    return ok;
+}
+
+const mostrarListadoChecklist = async(tareas = [] ) => {
+    // returna un nuevo arreglo trasnformandolo como nostros queramos
+    const choices = tareas.map( ( tarea, i ) => {
+        const idx = `${i + 1}.`.green;
+        return {
+            value: tarea.id,
+            name: `${ idx } ${ tarea.desc }`,
+            checked: ( tarea.completadoEn ) ? true : false
+        }
+    });
+
+    const preguntas = [
+        {
+            type: 'checkbox',
+            name: 'ids',
+            message: 'Seleccione',
+            choices
+        }
+    ]
+    const { ids } = await inquirer.prompt(preguntas);
+
+    return ids;
+}
 
 module.exports = {
     inquirerMenu,
     pausa,
-    leerInput
+    leerInput,
+    listadoTareasBorrar,
+    confirmar,
+    mostrarListadoChecklist
 }
